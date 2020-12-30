@@ -14,7 +14,8 @@ public class MainAppLesson2 {
         fillDiagonal();
         //5
         minMaxArray(new int[]{100, 5, 3, 2, -11, 4, 5, 2, 4, 895, -9, 1});
-
+        //6
+        System.out.println(checkBalance(new int[]{1, 5, 3, 3, 6}));
 
     }
 
@@ -81,4 +82,22 @@ public class MainAppLesson2 {
         }
 
     }
+
+    public static boolean checkBalance(int[] arr) {
+        int sumLeft = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sumLeft += arr[i];
+            int sumRight = 0;
+            for (int j = i + 1; j < arr.length; j++) {
+                sumRight += arr[j];
+            }
+            if (sumLeft == sumRight) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
 }
