@@ -9,7 +9,17 @@ public class MainAppLesson3 {
     public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        guessNumberGame(MAX_LIMIT);
+        gameSelection();
+    }
+
+    private static void gameSelection() {
+        System.out.println("Выбор игры:\n 0 - Выход\n 1 – Угадай число\n 2 – Угадай слово");
+        int game = sc.nextInt();
+        switch (game) {
+            case 1:
+                guessNumberGame(MAX_LIMIT);
+            break;
+        }
     }
 
     private static void guessNumberGame(int max) {
@@ -21,7 +31,7 @@ public class MainAppLesson3 {
             myNumber = sc.nextInt();
             //System.out.println(randomNumber);
             if (myNumber == randomNumber) {
-                System.out.printf("Вы победили! Это действительно %d\n\n ", randomNumber);
+                System.out.printf("Вы победили! Это действительно %d\n\n", randomNumber);
                 break;
             }
             if (randomNumber > myNumber) {
@@ -35,8 +45,13 @@ public class MainAppLesson3 {
         }
         System.out.println("Повторить игру еще раз? 1 – да / 0 – нет");
         int repeatGame = sc.nextInt();
-        if (repeatGame == 1) {
-            guessNumberGame(MAX_LIMIT);
+        switch (repeatGame) {
+            case 0:
+                gameSelection();
+                break;
+            case 1:
+                guessNumberGame(MAX_LIMIT);
+                break;
         }
     }
 }
