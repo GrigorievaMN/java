@@ -1,6 +1,7 @@
 package ru.geekbrains.courses.java.lesson2;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class MainAppLesson2 {
     public static void main(String[] args) {
@@ -16,7 +17,20 @@ public class MainAppLesson2 {
         minMaxArray(new int[]{100, 5, 3, 2, -11, 4, 5, 2, 4, 895, -9, 1});
         //6
         System.out.println(checkBalance(new int[]{1, 5, 3, 3, 6}));
-
+        //7 (1 вариант)
+        shiftArray(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},- 103);
+        //7 (2 вариант)
+        arrayShift(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},- 103);
+        // Задание с практики (переписать через два if)
+        System.out.println("Введите число:");
+        Scanner scanner = new Scanner (System.in);
+        int intExampleMultiply = scanner.nextInt();
+        if (intExampleMultiply % 3 == 0) {
+            System.out.println("Число успешно делится на 3");
+        }
+        if (intExampleMultiply % 5 ==0) {
+            System.out.println("Число успешно делится на 5");
+        }
     }
 
     public static void invertArray(int[] arr) {
@@ -75,11 +89,10 @@ public class MainAppLesson2 {
             if (value > maxValue){
                 maxValue = value;
             }
-            System.out.println("В массиве "+ Arrays.toString(arr));
-            System.out.println("Минимальное значение = "+ minValue);
-            System.out.println("Максимальное значение = "+ maxValue);
-
         }
+        System.out.println("В массиве "+ Arrays.toString(arr));
+        System.out.println("Минимальное значение = "+ minValue);
+        System.out.println("Максимальное значение = "+ maxValue);
 
     }
 
@@ -98,6 +111,59 @@ public class MainAppLesson2 {
         return false;
     }
 
+    static public void shiftArray(int[] arr, int shift) {
+        shift = shift % arr.length;
+        if (shift > 0) {
+            for (int i = 0; i < shift; i++) {
+                int buffer = arr[arr.length - 1];
+                ;
+                for (int j = arr.length - 1; j > 0; j--) {
+                    arr[j] = arr[j - 1];
+                }
+                arr[0] = buffer;
+            }
+        } else {
+            shift = Math.abs(shift);
+            for (int i = 0; i < shift; i++) {
+                int buffer = arr[0];
+                for (int j = 0; j < arr.length - 1; j++) {
+                    arr[j] = arr[j + 1];
+                }
+                arr[arr.length - 1] = buffer;
+            }
+        }
+        System.out.println(Arrays.toString(arr));
+    }
 
+    static void arrayShift(int[] arr, int shift)
+    {
+        shift = shift % arr.length;
+        if (shift <= 0) {
+            shift = Math.abs(shift);
+        } else {
+            shift = arr.length - shift;
+        }
+        reverseArray(arr, 0,shift-1);
+        reverseArray(arr, shift, arr.length - 1);
+        reverseArray(arr);
 
-}
+        System.out.println(Arrays.toString(arr));
+    }
+
+    static void reverseArray(int[] arr, int from, int to)
+    {
+        int tmpItem;
+        int cnt = (to + 1 - from) / 2 - 1;
+        for(int i = 0; i <= cnt; i++)
+        {
+            tmpItem = arr[i + from];
+            arr[i + from] = arr[to - i];
+            arr[to - i] = tmpItem;
+        }
+    }
+
+    static void reverseArray(int[] arr)
+    {
+        reverseArray(arr, 0, arr.length - 1);
+    }
+    }
