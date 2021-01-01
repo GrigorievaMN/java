@@ -6,8 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MainAppLesson4 {
     public static char[][] map;
-    public static final int SIZE = 3;
-    public static final int DOTS_TO_WIN = 3;
+    public static final int SIZE = 5;
+    public static final int DOTS_TO_WIN = 4;
     public static final char DOT_EMPTY = '•';
     public static final char DOT_X = 'X';
     public static final char DOT_O = 'O';
@@ -44,24 +44,43 @@ public class MainAppLesson4 {
         sc.close();
     }
 
-    private static boolean isWin(char symbol) {
-        if(map[0][0] == symbol && map[0][1] == symbol && map[0][2] == symbol)
-            return true;
-        if(map[1][0] == symbol && map[1][1] == symbol && map[1][2] == symbol)
-            return true;
-        if(map[2][0] == symbol && map[2][1] == symbol && map[2][2] == symbol)
-            return true;
-        if(map[0][0] == symbol && map[1][0] == symbol && map[2][0] == symbol)
-            return true;
-        if(map[0][1] == symbol && map[1][1] == symbol && map[2][1] == symbol)
-            return true;
-        if(map[0][2] == symbol && map[1][2] == symbol && map[2][2] == symbol)
-            return true;
-        if(map[0][0] == symbol && map[1][1] == symbol && map[2][2] == symbol)
-            return true;
-        if(map[2][0] == symbol && map[1][1] == symbol && map[0][2] == symbol)
-            return true;
-
+    private static boolean isWin (char symbol) {
+        int isWinDiagonalOne = 0;
+        int isWinDiagonalTwo = 0;
+        for (int i = 0; i < SIZE; i++) {
+            int isWinHorizontal = 0;
+            int isWinVertical = 0;
+            for (int j = 0; j < SIZE; j++) {
+                //Horizontal
+                if (map[i][j] == symbol) {
+                    isWinHorizontal += 1;
+                    if (isWinHorizontal == DOTS_TO_WIN) return true;
+                } else {
+                    isWinHorizontal = 0;
+                }
+                //Vertical
+                if (map[j][i] == symbol) {
+                    isWinVertical += 1;
+                    if (isWinVertical == DOTS_TO_WIN) return true;
+                } else {
+                    isWinVertical = 0;
+                }
+            }
+            //DiagonalOne
+            if (map[i][i] == symbol) {
+                isWinDiagonalOne += 1;
+                if (isWinDiagonalOne == DOTS_TO_WIN) return true;
+            } else {
+                isWinDiagonalOne = 0;
+            }
+            //DiagonalTwo
+            if (map[i][SIZE-1-i] == symbol) {
+                isWinDiagonalTwo += 1;
+                if (isWinDiagonalTwo == DOTS_TO_WIN) return true;
+            } else {
+                isWinDiagonalTwo = 0;
+            }
+        }
         return false;
     }
 
