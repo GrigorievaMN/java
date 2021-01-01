@@ -31,7 +31,7 @@ public class MainAppLesson3 {
     private static void guessWordGame(String[] listWords) {
         String word = listWords[ThreadLocalRandom.current().nextInt(0, listWords.length)];
         String userPrintWord = "###############";
-        System.out.printf("Я загадал слово.Попробуй его угадать)\n%s %d\n",userPrintWord, userPrintWord.length());
+        System.out.printf("Я загадал слово.Попробуй его угадать)\n%s\n",userPrintWord);
         String userWord = sc.next();
         if (isWinWord(word, userWord)) {
             System.out.printf("Вы победили! Это действительно %s\n\n", word);
