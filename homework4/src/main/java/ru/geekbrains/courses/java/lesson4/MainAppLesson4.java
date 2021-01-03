@@ -17,6 +17,7 @@ public class MainAppLesson4 {
     public static void main(String[] args) {
         isSizeMoreThanTwo();
         initMap();
+        System.out.printf("Игра крестики - нолики!\nДля победы поставь %d фишки\n",DOTS_TO_WIN);
         printMap();
         while (true) {
             humanTurn();
@@ -42,15 +43,15 @@ public class MainAppLesson4 {
         }
         System.out.println("Игра закончена");
         sc.close();
+
     }
 
-    private static boolean isWin(char symbol) {
-
+    public static boolean isWin(char symbol) {
         for (int i = 0; i < SIZE; i++) {
             int isWinHorizontal = 0;
             int isWinVertical = 0;
             for (int j = 0; j < SIZE; j++) {
-                //Horizontal
+               //Horizontal
                 if (map[i][j] == symbol) {
                     isWinHorizontal += 1;
                     if (isWinHorizontal == DOTS_TO_WIN) return true;
@@ -68,6 +69,7 @@ public class MainAppLesson4 {
         }
         return checkDiagonal(symbol);
     }
+
 
     public static boolean checkDiagonal (char symbol) {
         for (int i = 0; i <= SIZE - DOTS_TO_WIN; i++) {
@@ -119,11 +121,8 @@ public class MainAppLesson4 {
                     } else {
                         isWinDiagonalTwoDown = 0;
                     }
-
                 }
-
             }
-
         }
         return false;
     }
@@ -166,12 +165,14 @@ public class MainAppLesson4 {
         int y;
         if (!isHorizontalBlock()) {
             if (!isVerticalBlock()) {
-                do {
-                    x = random.nextInt(0, SIZE);
-                    y = random.nextInt(0, SIZE);
-                } while (!isCellValid(x, y));
-                System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
-                map[y][x] = DOT_O;
+                if (!isDiagonalBlock()) {
+                    do {
+                        x = random.nextInt(0, SIZE);
+                        y = random.nextInt(0, SIZE);
+                    } while (!isCellValid(x, y));
+                    System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+                    map[y][x] = DOT_O;
+                }
             }
         }
     }
@@ -186,7 +187,7 @@ public class MainAppLesson4 {
                 if (map[i][j] == DOT_X) {
                     isHorizontalBlock += 1;
                     if (isHorizontalBlock == DOTS_TO_WIN) {
-                        System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+                        System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
                         map[x][y] = DOT_O;
                         return true;
                     }
@@ -198,7 +199,7 @@ public class MainAppLesson4 {
                             x = i;
                             y = j;
                             if (isHorizontalBlock == DOTS_TO_WIN) {
-                                System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+                                System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
                                 map[x][y] = DOT_O;
                                 return true;
                             }
@@ -207,6 +208,8 @@ public class MainAppLesson4 {
                             x = i;
                             y = j;
                         }
+                } else {
+                        isHorizontalBlock = 0;
                     }
                 }
             }
@@ -223,7 +226,7 @@ public class MainAppLesson4 {
                 if (map[j][i] == DOT_X) {
                     isVerticalBlock += 1;
                     if (isVerticalBlock == DOTS_TO_WIN) {
-                        System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+                        System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
                         map[x][y] = DOT_O;
                         return true;
                     }
@@ -235,7 +238,7 @@ public class MainAppLesson4 {
                             x = j;
                             y = i;
                             if (isVerticalBlock == DOTS_TO_WIN) {
-                                System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+                                System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
                                 map[x][y] = DOT_O;
                                 return true;
                             }
@@ -244,6 +247,8 @@ public class MainAppLesson4 {
                             x = j;
                             y = i;
                         }
+                    } else {
+                        isVerticalBlock = 0;
                     }
                 }
             }
@@ -251,7 +256,40 @@ public class MainAppLesson4 {
         return false;
     }
 
-
+    public static boolean isDiagonalBlock() {
+        int isDiagonalBlock = 0;
+        int cntDotEmpty = 0;
+        int x = -1;
+        for (int i = 0; i < SIZE; i++) {
+            if (map[i][i] == DOT_X) {
+                isDiagonalBlock += 1;
+                if (isDiagonalBlock == DOTS_TO_WIN) {
+                    System.out.println("Компьютер походил в точку " + (x + 1) + " " + (x + 1));
+                    map[x][x] = DOT_O;
+                    return true;
+                }
+                } else {
+                    if (map[i][i] == DOT_EMPTY) {
+                        if (cntDotEmpty == 0) {
+                            cntDotEmpty = 1;
+                            isDiagonalBlock += 1;
+                            x = i;
+                            if (isDiagonalBlock == DOTS_TO_WIN) {
+                                System.out.println("Компьютер походил в точку " + (x + 1) + " " + (x + 1));
+                                map[x][x] = DOT_O;
+                                return true;
+                            }
+                        } else {
+                            isDiagonalBlock = i - x;
+                            x = i;
+                        }
+                    } else {
+                        isDiagonalBlock = 0;
+                    }
+                }
+            }
+        return false;
+        }
 
     public static void humanTurn() {
         int x = -1;
@@ -279,11 +317,10 @@ public class MainAppLesson4 {
         return false;
     }
 
-    private static void isSizeMoreThanTwo() {
+    public static void isSizeMoreThanTwo() {
         if (SIZE < 3) {
             System.out.println("Минимальный размер поля 3х3");
             System.exit(1);
         }
     }
 }
-
