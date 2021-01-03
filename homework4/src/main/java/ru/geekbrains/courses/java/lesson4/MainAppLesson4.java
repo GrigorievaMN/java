@@ -17,7 +17,7 @@ public class MainAppLesson4 {
     public static void main(String[] args) {
         isSizeMoreThanTwo();
         initMap();
-        System.out.printf("Игра крестики - нолики!\nДля победы поставь %d фишки\n",DOTS_TO_WIN);
+        System.out.printf("Игра крестики - нолики!\nДля победы поставь %d фишки\n", DOTS_TO_WIN);
         printMap();
         while (true) {
             humanTurn();
@@ -47,86 +47,51 @@ public class MainAppLesson4 {
     }
 
     public static boolean isWin(char symbol) {
+        //Horizontal
         for (int i = 0; i < SIZE; i++) {
-            int isWinHorizontal = 0;
-            int isWinVertical = 0;
-            for (int j = 0; j < SIZE; j++) {
-               //Horizontal
-                if (map[i][j] == symbol) {
-                    isWinHorizontal += 1;
-                    if (isWinHorizontal == DOTS_TO_WIN) return true;
-                } else {
-                    isWinHorizontal = 0;
-                    }
-                //Vertical
-                if (map[j][i] == symbol) {
-                    isWinVertical += 1;
-                    if (isWinVertical == DOTS_TO_WIN) return true;
-                } else {
-                    isWinVertical = 0;
-                }
+            if (isCheckWin(symbol, i, 0, 0, 0, 1, 0, SIZE)) {
+                return true;
             }
         }
-        return checkDiagonal(symbol);
-    }
-
-
-    public static boolean checkDiagonal (char symbol) {
-        for (int i = 0; i <= SIZE - DOTS_TO_WIN; i++) {
-            int isWinDiagonalOne = 0;
-            int isWinDiagonalOneDown = 0;
-            int isWinDiagonalTwo = 0;
-            int isWinDiagonalTwoDown = 0;
-            for (int j = 0; j < SIZE; j++) {
-                //DiagonalOne
-                if (i == 0) {
-                    if (map[j][j] == symbol) {
-                        isWinDiagonalOne += 1;
-                        if (isWinDiagonalOne == DOTS_TO_WIN) return true;
-                    } else {
-                        isWinDiagonalOne = 0;
-                    }
-                    //DiagonalTwo
-                    if (map[j][SIZE - 1 - j] == symbol) {
-                        isWinDiagonalTwo += 1;
-                        if (isWinDiagonalTwo == DOTS_TO_WIN) return true;
-                    } else {
-                        isWinDiagonalTwo = 0;
-                    }
-                }
-                if (i > 0 && i + j < SIZE) {
-                    if (map[j][j + i] == symbol) {
-                        isWinDiagonalOne += 1;
-                        if (isWinDiagonalOne == DOTS_TO_WIN) return true;
-
-                    } else {
-                        isWinDiagonalOne = 0;
-                    }
-                    if (map[j + i][j] == symbol) {
-                        isWinDiagonalOneDown += 1;
-                        if (isWinDiagonalOneDown == DOTS_TO_WIN) return true;
-
-                    } else {
-                        isWinDiagonalOneDown = 0;
-                    }
-                    if (map[j + i][SIZE - 1 - j] == symbol) {
-                        isWinDiagonalTwo += 1;
-                        if (isWinDiagonalTwo == DOTS_TO_WIN) return true;
-                    } else {
-                        isWinDiagonalTwo = 0;
-                    }
-                    if (map[j][SIZE - 1 - j - i] == symbol) {
-                        isWinDiagonalTwoDown += 1;
-                        if (isWinDiagonalTwoDown == DOTS_TO_WIN) return true;
-                    } else {
-                        isWinDiagonalTwoDown = 0;
-                    }
-                }
+        //Vertical
+        for (int i = 0; i < SIZE; i++) {
+            if (isCheckWin(symbol, 0, 1, 0, i, 0, 0, SIZE)) {
+                return true;
             }
+        }
+        //Diagonal
+        for (int i = 0; i <= SIZE - DOTS_TO_WIN; i++) {
+            if (isCheckWin(symbol, 0, 1, 0, i, 1, 0, SIZE - i)) {
+                return true;
+            }
+            if (isCheckWin(symbol, i, 1, 0, 0, 1, 0, SIZE - i)) {
+                return true;
+            }
+            if (isCheckWin(symbol, 0, 1, 0, -i, -1, SIZE - 1, SIZE - i)) {
+                return true;
+            }
+            if (isCheckWin(symbol, i, 1, 0, 0, -1, SIZE - 1, SIZE - i)) {
+                return true;
+            }
+
         }
         return false;
     }
 
+    public static boolean isCheckWin(char symbol, int x, int mx, int px, int y, int my, int py, int len) {
+        int isWin = 0;
+        for (int i = 0; i < len; i++) {
+            if (map[x + i * mx + px][y + i * my + py] == symbol) {
+                isWin += 1;
+                if (isWin == DOTS_TO_WIN) {
+                    return true;
+                }
+            } else {
+                isWin = 0;
+            }
+        }
+        return false;
+    }
 
     public static boolean isMapFull() {
         for (int i = 0; i < SIZE; i++) {
@@ -163,133 +128,90 @@ public class MainAppLesson4 {
     public static void aiTurn() {
         int x;
         int y;
-        if (!isHorizontalBlock()) {
-            if (!isVerticalBlock()) {
-                if (!isDiagonalBlock()) {
-                    do {
-                        x = random.nextInt(0, SIZE);
-                        y = random.nextInt(0, SIZE);
-                    } while (!isCellValid(x, y));
-                    System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
-                    map[y][x] = DOT_O;
-                }
-            }
+        if (!isBlock()) {
+            do {
+                x = random.nextInt(0, SIZE);
+                y = random.nextInt(0, SIZE);
+            } while (!isCellValid(x, y));
+            System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+            map[y][x] = DOT_O;
         }
     }
 
-     public static boolean isHorizontalBlock() {
+    public static boolean isBlock() {
+        //Horizontal
         for (int i = 0; i < SIZE; i++) {
-            int isHorizontalBlock = 0;
-            int cntDotEmpty = 0;
-            int x = -1;
-            int y = -1;
-            for (int j = 0; j < SIZE; j++) {
-                if (map[i][j] == DOT_X) {
-                    isHorizontalBlock += 1;
-                    if (isHorizontalBlock == DOTS_TO_WIN) {
-                        System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
-                        map[x][y] = DOT_O;
-                        return true;
-                    }
-                } else {
-                    if (map[i][j] == DOT_EMPTY) {
-                        if (cntDotEmpty == 0) {
-                            cntDotEmpty = 1;
-                            isHorizontalBlock += 1;
-                            x = i;
-                            y = j;
-                            if (isHorizontalBlock == DOTS_TO_WIN) {
-                                System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
-                                map[x][y] = DOT_O;
-                                return true;
-                            }
-                        } else {
-                            isHorizontalBlock = j - y;
-                            x = i;
-                            y = j;
-                        }
-                } else {
-                        isHorizontalBlock = 0;
-                    }
-                }
+            if (isCheckBlock(i, 0, 0, 0, 1, 0, SIZE)) {
+                return true;
             }
         }
-        return false;
-    }
-    public static boolean isVerticalBlock() {
+        //Vertical
         for (int i = 0; i < SIZE; i++) {
-            int isVerticalBlock = 0;
-            int cntDotEmpty = 0;
-            int x = -1;
-            int y = -1;
-            for (int j = 0; j < SIZE; j++) {
-                if (map[j][i] == DOT_X) {
-                    isVerticalBlock += 1;
-                    if (isVerticalBlock == DOTS_TO_WIN) {
-                        System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
-                        map[x][y] = DOT_O;
-                        return true;
-                    }
-                } else {
-                    if (map[j][i] == DOT_EMPTY) {
-                        if (cntDotEmpty == 0) {
-                            cntDotEmpty = 1;
-                            isVerticalBlock += 1;
-                            x = j;
-                            y = i;
-                            if (isVerticalBlock == DOTS_TO_WIN) {
-                                System.out.println("Компьютер походил в точку " + (y + 1) + " " + (x + 1));
-                                map[x][y] = DOT_O;
-                                return true;
-                            }
-                        } else {
-                            isVerticalBlock = j - x;
-                            x = j;
-                            y = i;
-                        }
-                    } else {
-                        isVerticalBlock = 0;
-                    }
-                }
+            if (isCheckBlock(0, 1, 0, i, 0, 0, SIZE)) {
+                return true;
             }
+        }
+        //Diagonal
+        for (int i = 0; i <= SIZE - DOTS_TO_WIN; i++) {
+            if (isCheckBlock(0, 1, 0, i, 1, 0, SIZE - i)) {
+                return true;
+            }
+            if (isCheckBlock(i, 1, 0, 0, 1, 0, SIZE - i)) {
+                return true;
+            }
+            if (isCheckBlock(0, 1, 0, -i, -1, SIZE - 1, SIZE - i)) {
+                return true;
+            }
+            if (isCheckBlock(i, 1, 0, 0, -1, SIZE - 1, SIZE - i)) {
+                return true;
+            }
+
         }
         return false;
     }
 
-    public static boolean isDiagonalBlock() {
-        int isDiagonalBlock = 0;
+    public static boolean isCheckBlock(int x, int mx, int px, int y, int my, int py, int len) {
+        int isBlock = 0;
         int cntDotEmpty = 0;
-        int x = -1;
-        for (int i = 0; i < SIZE; i++) {
-            if (map[i][i] == DOT_X) {
-                isDiagonalBlock += 1;
-                if (isDiagonalBlock == DOTS_TO_WIN) {
-                    System.out.println("Компьютер походил в точку " + (x + 1) + " " + (x + 1));
-                    map[x][x] = DOT_O;
+        int aix = -1;
+        int aiy = -1;
+        for (int i = 0; i < len; i++) {
+            if (map[x + i * mx + px][y + i * my + py] == DOT_X) {
+                isBlock += 1;
+                if (isBlock == DOTS_TO_WIN) {
+                    System.out.println("Компьютер походил в точку" + (aiy + 1) + " " + (aix + 1));
+                    map[aix][aiy] = DOT_O;
                     return true;
                 }
-                } else {
-                    if (map[i][i] == DOT_EMPTY) {
-                        if (cntDotEmpty == 0) {
-                            cntDotEmpty = 1;
-                            isDiagonalBlock += 1;
-                            x = i;
-                            if (isDiagonalBlock == DOTS_TO_WIN) {
-                                System.out.println("Компьютер походил в точку " + (x + 1) + " " + (x + 1));
-                                map[x][x] = DOT_O;
-                                return true;
-                            }
-                        } else {
-                            isDiagonalBlock = i - x;
-                            x = i;
+            } else {
+                if (map[x + i * mx + px][y + i * my + py] == DOT_EMPTY) {
+                    if (cntDotEmpty == 0) {
+                        cntDotEmpty = 1;
+                        isBlock += 1;
+                        aix = x + i * mx + px;
+                        aiy = y + i * my + py;
+                        if (isBlock == DOTS_TO_WIN) {
+                            System.out.println("Компьютер походил в точку" + (aiy + 1) + " " + (aix + 1));
+                            map[aix][aiy] = DOT_O;
+                            return true;
                         }
                     } else {
-                        isDiagonalBlock = 0;
+                        if (mx == 0) {
+                            isBlock = Math.abs(y + i * my + py - aiy);
+                        } else {
+                            isBlock = Math.abs(x + i * mx + px - aix);
+                        }
+                        aix = x + i * mx + px;
+                        aiy = y + i * my + py;
                     }
+                } else {
+                    isBlock = 0;
+                    cntDotEmpty = 0;
                 }
             }
-        return false;
         }
+        return false;
+    }
 
     public static void humanTurn() {
         int x = -1;
