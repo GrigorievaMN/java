@@ -14,7 +14,7 @@ public class Main {
 
         //5
         for (int i = 0; i < persArray.length; i++ ) {
-            if (persArray[i].getAge() < 40) {
+            if (persArray[i].getAge() > 40) {
                 persArray[i].printPersonInfo();
             }
         }
